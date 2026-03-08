@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Style with Lynn: Excellence is in the Details. Luxury goods, lash services, and expert editing to elevate your style.">
+  <meta property="og:title" content="Style with Lynn">
+  <meta property="og:description" content="Excellence is in the Details. Shop luxury essentials, crochet, photography, and more.">
+  <meta property="og:image" content="/assets/lynn-brand-og.jpg">
+  <title>Style with Lynn | Excellence is in the Details</title>
+  <!-- Fonts are system defaults to avoid external network requests -->
+  <style>
+    :root {
+      --green: #1f6f4a;
+      --white: #ffffff;
+      --gold: #d4af37;
+      --dark: #000000;
+      --gray: #666666;
+      --light-gray: #f5f5f5;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--white);
+      color: var(--dark);
+      line-height: 1.6;
+    }
+    .image-modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+    }
+
+    .image-modal.active {
+      display: flex;
+    }
+
+    .image-modal__overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+    }
+
+    .image-modal__content {
+      position: relative;
+      max-width: 90%;
+      max-height: 90%;
+      padding: 16px;
+      background: rgba(0, 0, 0, 0.85);
+      border-radius: 12px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 1;
+    }
+
+    .image-modal__content img {
+      max-width: 100%;
+      max-height: 70vh;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+
+    .image-modal__caption {
+      color: var(--white);
+      font-size: 0.95rem;
+      text-align: center;
+    }
+
+    .image-modal__close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(255, 255, 255, 0.15);
+      border: none;
+      color: var(--white);
+      font-size: 1.4rem;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .image-modal__close:hover {
+      background: rgba(255, 255, 255, 0.35);
+    }
+
+
+    /* Navigation */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+      background: var(--white);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid var(--light-gray);
+    }
+
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--dark);
+      letter-spacing: 2px;
+    }
+
+    .nav-center {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      flex: 1;
+      justify-content: center;
+    }
+
+    .nav-links {
+      display: none;
+      list-style: none;
+      gap: 30px;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--dark);
+      font-size: 0.95rem;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: var(--green);
+    }
+
+    .hamburger {
+      width: 50px;
+      height: 50px;
+      border: 2px solid var(--gold);
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      gap: 5px;
+      background: transparent;
+      transition: background 0.3s;
+      margin: 0;
+      padding: 0;
+    }
+
+    .hamburger.active span {
+      background: var(--green);
+    }
+
+    .hamburger.active span:nth-child(1) {
+      transform: rotate(45deg) translate(10px, 10px);
+    }
+
+    .hamburger.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger.active span:nth-child(3) {
+      transform: rotate(-45deg) translate(7px, -7px);
+    }
+
+    .hamburger:hover {
+      background: var(--light-gray);
+    }
+
+    .hamburger span {
+      width: 20px;
+      height: 2px;
+      background: var(--dark);
+      display: block;
+      transition: all 0.3s ease;
+    }
+
+    /* Mobile Menu */
+    .mobile-menu {
+      display: none;
+      position: absolute;
+      top: 60px;
+      left: 0;
+      right: 0;
+      background: var(--white);
+      border-bottom: 1px solid var(--light-gray);
+      padding: 20px;
+      flex-direction: column;
+      gap: 15px;
+      z-index: 99;
+    }
+
+    .mobile-menu.active {
+      display: flex;
+    }
+
+    .mobile-menu a {
+      text-decoration: none;
+      color: var(--dark);
+      font-size: 1rem;
+      font-weight: 500;
+      padding: 10px;
+      transition: color 0.3s;
+    }
+
+    .mobile-menu a:hover {
+      color: var(--green);
+    }
+
+    .shop-btn {
+      background: var(--dark);
+      color: var(--white);
+      border: none;
+      padding: 10px 24px;
+      border-radius: 30px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .shop-btn:hover {
+      background: var(--green);
+    }
+
+    /* Hero Section */
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: center;
+      padding: 80px 40px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .hero-content h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 3.5rem;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 20px;
+      color: var(--dark);
+    }
+
+    .hero-content .subtitle {
+      font-size: 1.1rem;
+      color: var(--gray);
+      margin-bottom: 20px;
+      line-height: 1.7;
+    }
+
+    .hero-content p {
+      font-size: 1rem;
+      color: var(--gray);
+      margin-bottom: 30px;
+      line-height: 1.8;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .btn-primary {
+      background: var(--dark);
+      color: var(--white);
+      border: none;
+      padding: 12px 32px;
+      border-radius: 30px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s, box-shadow 0.3s;
+      text-decoration: none;
+      display: inline-block;
+      min-height: 44px;
+      min-width: 44px;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    .btn-primary:hover {
+      background: var(--green);
+      box-shadow: 0 4px 16px rgba(31, 111, 74, 0.2);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: #0052cc;
+      border: none;
+      padding: 12px 32px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: color 0.3s;
+      text-decoration: none;
+      display: inline-block;
+      min-height: 44px;
+      min-width: 44px;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    .btn-secondary:hover {
+      color: var(--green);
+    }
+
+    .hero-image {
+      position: relative;
+      height: 500px;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .hero-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Shop by Category Section */
+    .shop-section {
+      padding: 80px 40px;
+      background: var(--white);
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .shop-section h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 50px;
+      color: var(--dark);
+    }
+
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+    }
+
+    .category-card {
+      position: relative;
+      height: 300px;
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .category-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+    }
+
+    .category-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s;
+    }
+
+    .category-card:hover img {
+      transform: scale(1.05);
+    }
+
+    .category-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 20px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-start;
+      pointer-events: none;
+    }
+
+    .category-overlay h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--white);
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+      background: rgba(0, 0, 0, 0.35);
+      padding: 10px 14px;
+      border-radius: 12px;
+      margin: 0;
+    }
+
+    /* About Section */
+    .about-section {
+      padding: 80px 40px;
+      background: var(--light-gray);
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .about-section h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 30px;
+      color: var(--dark);
+    }
+
+    .about-section p {
+      font-size: 1.1rem;
+      color: var(--gray);
+      line-height: 1.8;
+      max-width: 800px;
+    }
+
+    /* Order Section */
+    .order-section {
+      background: linear-gradient(135deg, var(--green) 0%, var(--green) 100%);
+      color: var(--white);
+      padding: 80px 40px;
+      text-align: center;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .order-section h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    .order-section p {
+      font-size: 1.1rem;
+      margin-bottom: 30px;
+      opacity: 0.95;
+    }
+
+    .order-section .btn-primary {
+      background: var(--gold);
+      color: var(--green);
+    }
+
+    .order-section .btn-primary:hover {
+      background: var(--white);
+    }
+
+    /* Credits & Footer */
+    .credits {
+      padding: 40px 40px;
+      text-align: center;
+      background: var(--light-gray);
+      font-size: 0.95rem;
+      color: var(--gray);
+      border-top: 1px solid #e0e0e0;
+    }
+
+    .credits .badge {
+      display: inline-block;
+      background: var(--gold);
+      color: var(--green);
+      border-radius: 20px;
+      padding: 6px 16px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-top: 10px;
+    }
+
+    .footer {
+      background: var(--dark);
+      color: var(--white);
+      padding: 40px 40px;
+      text-align: center;
+      border-top: 1px solid var(--gold);
+    }
+
+    .footer .brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .footer .tagline {
+      font-size: 0.95rem;
+      color: var(--gold);
+      font-style: italic;
+    }
+
+    /* Floating WhatsApp Button */
+    .whatsapp-float {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 99;
+      background: #25d366;
+      color: var(--white);
+      border-radius: 50%;
+      width: 56px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+      font-size: 2rem;
+      cursor: pointer;
+      transition: background 0.3s, box-shadow 0.3s, transform 0.3s;
+      border: none;
+      text-decoration: none;
+    }
+
+    .whatsapp-float:hover {
+      background: #20ba5d;
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+      transform: scale(1.1);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      nav {
+        padding: 15px 20px;
+        gap: 10px;
+      }
+
+      .logo {
+        font-size: 1.2rem;
+      }
+
+      .nav-center {
+        gap: 15px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+        padding: 40px 20px;
+        gap: 30px;
+      }
+
+      .hero-content h1 {
+        font-size: 2.2rem;
+      }
+
+      .hero-content .subtitle {
+        font-size: 1rem;
+      }
+
+      .hero-content p {
+        font-size: 0.95rem;
+      }
+
+      .hero-image {
+        height: 300px;
+      }
+
+      .hero-buttons {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .btn-primary,
+      .btn-secondary {
+        width: 100%;
+        padding: 14px 24px;
+        font-size: 1rem;
+      }
+
+      .shop-section,
+      .about-section,
+      .order-section {
+        padding: 50px 20px;
+      }
+
+      .shop-section h2,
+      .about-section h2,
+      .order-section h2 {
+        font-size: 1.8rem;
+        margin-bottom: 30px;
+      }
+
+      .category-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .category-card {
+        height: 220px;
+      }
+
+      .category-overlay h3 {
+        font-size: 1.3rem;
+      }
+
+      .footer,
+      .credits {
+        padding: 30px 20px;
+      }
+
+      .footer .brand {
+        font-size: 1.2rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      nav {
+        padding: 12px 15px;
+        min-height: 60px;
+      }
+
+      .logo {
+        font-size: 1rem;
+        letter-spacing: 1px;
+      }
+
+      .shop-btn {
+        padding: 8px 16px;
+        font-size: 0.8rem;
+      }
+
+      .hamburger {
+        width: 45px;
+        height: 45px;
+        min-width: 45px;
+        min-height: 45px;
+      }
+
+      .hamburger span {
+        width: 18px;
+        height: 1.5px;
+      }
+
+      .hero {
+        padding: 30px 15px;
+        gap: 20px;
+      }
+
+      .hero-content h1 {
+        font-size: 1.5rem;
+        line-height: 1.3;
+        margin-bottom: 10px;
+      }
+
+      .hero-content .subtitle {
+        font-size: 0.95rem;
+        margin-bottom: 15px;
+      }
+
+      .hero-content p {
+        font-size: 0.9rem;
+        margin-bottom: 20px;
+        line-height: 1.6;
+      }
+
+      .hero-image {
+        height: 250px;
+      }
+
+      .hero-buttons {
+        gap: 12px;
+      }
+
+      .btn-primary,
+      .btn-secondary {
+        padding: 12px 20px;
+        font-size: 0.9rem;
+        min-height: 44px;
+        border-radius: 25px;
+      }
+
+      .shop-section,
+      .about-section,
+      .order-section {
+        padding: 40px 15px;
+      }
+
+      .shop-section h2,
+      .about-section h2,
+      .order-section h2 {
+        font-size: 1.4rem;
+        margin-bottom: 25px;
+      }
+
+      .shop-section p,
+      .about-section p,
+      .order-section p {
+        font-size: 0.9rem;
+      }
+
+      .category-card {
+        height: 180px;
+      }
+
+      .category-overlay {
+        padding: 20px;
+      }
+
+      .category-overlay h3 {
+        font-size: 1.1rem;
+      }
+
+      .about-section p {
+        font-size: 0.95rem;
+        line-height: 1.7;
+      }
+
+      .footer,
+      .credits {
+        padding: 25px 15px;
+        font-size: 0.9rem;
+      }
+
+      .footer .brand {
+        font-size: 1rem;
+      }
+
+      .footer .tagline {
+        font-size: 0.85rem;
+      }
+
+      .credits .badge {
+        padding: 4px 12px;
+        font-size: 0.8rem;
+      }
+
+      .whatsapp-float {
+        width: 50px;
+        height: 50px;
+        bottom: 20px;
+        right: 20px;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .hero-content h1 {
+        font-size: 1.3rem;
+      }
+
+      .hero-buttons {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .btn-primary,
+      .btn-secondary {
+        padding: 11px 18px;
+        font-size: 0.85rem;
+      }
+
+      .shop-section h2,
+      .about-section h2,
+      .order-section h2 {
+        font-size: 1.2rem;
+      }
+
+      .category-overlay h3 {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav>
+    <div class="logo">SWL</div>
+    <div class="nav-center">
+      <ul class="nav-links">
+        <li><a href="#shop">Shop</a></li>
+        <li><a href="#about">About</a></li>
+      </ul>
+      <div class="hamburger" id="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+    <a href="https://wa.me/2349014218928?text=Hi%20Lynn!%20I%20want%20to%20order." target="_blank" class="shop-btn">Shop Now</a>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="#shop">Shop</a>
+    <a href="#about">About</a>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Luxury Goods & Stylish Services</h1>
+      <div class="subtitle">Excellence is in the Details</div>
+      <p>Handcrafted essentials, artisanal crochet, and professional photography — curated for confidence and style.</p>
+      <div class="hero-buttons">
+        <a href="https://wa.me/2349014218928?text=Hi%20Lynn!%20I%20want%20to%20order." target="_blank" class="btn-primary">Shop Now</a>
+        <a href="#about" class="btn-secondary">Our Story</a>
+      </div>
+    </div>
+    <div class="hero-image">
+      <img src="L logo.jpeg" alt="Hero image" onerror="this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'800\' height=\'500\'%3E%3Crect width=\'100%25\' height=\'100%25\' fill=\'%23f0f0f0\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'%23666\' font-family=\'Arial, sans-serif\' font-size=\'28\'%3EAdd+hero+image+here%3C/text%3E%3C/svg%3E'">
+    </div>
+  </section>
+
+    <!-- Shop by Category -->
+  <section class="shop-section" id="shop">
+    <h2>Shop by Category</h2>
+    <div class="category-grid">
+      <div class="category-card">
+        <img src="l1.jpeg" alt="Ice necklace" onerror="this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'500\' height=\'300\'%3E%3Crect width=\'100%25\' height=\'100%25\' fill=\'#f0f0f0\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'#666\' font-family=\'Arial, sans-serif\' font-size=\'22\'%3EAdd+l1.jpg%3C/text%3E%3C/svg%3E'">
+        <div class="category-overlay">
+          <h3>Ice necklace (Pendants are active on tester)</h3>
+        </div>
+      </div>
+      <div class="category-card">
+        <img src="l2.jpeg" alt="G-shock wristwatch" onerror="this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'500\' height=\'300\'%3E%3Crect width=\'100%25\' height=\'100%25\' fill=\'#f0f0f0\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'#666\' font-family=\'Arial, sans-serif\' font-size=\'22\'%3EAdd+l2.jpg%3C/text%3E%3C/svg%3E'">
+        <div class="category-overlay">
+          <h3>G-shock wristwatch (Comes fully boxed)</h3>
+        </div>
+      </div>
+      <div class="category-card">
+        <img src="L3.jpeg" alt="Poedagar Automatic watch" onerror="this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'500\' height=\'300\'%3E%3Crect width=\'100%25\' height=\'100%25\' fill=\'#f0f0f0\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'#666\' font-family=\'Arial, sans-serif\' font-size=\'22\'%3EAdd+l3.jpg%3C/text%3E%3C/svg%3E'">
+        <div class="category-overlay">
+          <h3>Poedagar Automatic watch for men (Comes fully boxed)</h3>
+        </div>
+      </div>
+    </div>
+  </section>
+<!-- About Section -->
+  <section class="about-section" id="about">
+    <h2>About Style with Lynn</h2>
+    <p>From luxury men's essentials to artisanal crochet and professional photography, Style with Lynn blends craftsmanship with creativity. Our brand is dedicated to offering premium goods and services including expert lash artistry and photo editing — all designed to elevate your personal style. Excellence is not an act, but a habit. It's in every detail we create.</p>
+  </section>
+
+  <!-- Order Section -->
+  <section class="order-section">
+    <h2>Ready to Elevate Your Style?</h2>
+    <p>Contact us directly on WhatsApp for orders and custom inquiries.</p>
+    <a href="https://wa.me/2349014218928?text=Hi%20Lynn!%20I%20want%20to%20order." target="_blank" class="btn-primary">Order Now</a>
+  </section>
+
+  <!-- Credits -->
+  <section class="credits">
+    <div>Courtesy: LFM</div>
+    <div>Sponsored by: Salamdev <span role="img" aria-label="developer">👨‍💻</span></div>
+    <div class="badge">Student Brand Hub</div>
+  </section>
+
+  ```html
+// filepath: c:\Users\DELL\OneDrive\Documents\Brand Hub\Lynn\lynn.html
+<!-- ...existing code... -->
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="brand">Style with Lynn</div>
+    <div class="tagline">"Excellence is in the Details"</div>
+  </footer>
+
+  <!-- Image Lightbox Modal -->
+  <div class="image-modal" id="image-modal" aria-hidden="true">
+    <div class="image-modal__overlay" id="image-modal-overlay"></div>
+    <div class="image-modal__content">
+      <button class="image-modal__close" id="image-modal-close" aria-label="Close image">×</button>
+      <img src="" alt="" id="image-modal-img">
+      <div class="image-modal__caption" id="image-modal-caption"></div>
+    </div>
+  </div>
+
+   
+
+    <!-- Floating WhatsApp Button -->
+  <a href="https://wa.me/2349014218928?text=Hi%20Lynn!%20I%20want%20to%20order." class="whatsapp-float" target="_blank" title="Order on WhatsApp">
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M16 0C7.168 0 0 7.168 0 16s7.168 16 16 16 16-7.168 16-16-7.168-16-16-16zm0 29c-7.168 0-13-5.832-13-13s5.832-13 13-13 13 5.832 13 13-5.832 13-13 13z" fill="currentColor"/>
+      <path d="M23.5 20.5c-0.3-0.2-1.7-0.8-2-0.9-0.3-0.1-0.5-0.2-0.7 0.2-0.2 0.3-0.7 0.9-0.9 1.1-0.2 0.2-0.4 0.2-0.7 0.1-0.3-0.1-1.2-0.4-2.3-1.3-0.8-0.7-1.3-1.5-1.5-1.8-0.2-0.3 0-0.5 0.1-0.7 0.1-0.2 0.2-0.4 0.3-0.6 0.1-0.2 0.1-0.4 0-0.6-0.1-0.2-0.7-1.6-1-2.2-0.3-0.6-0.6-0.5-0.8-0.5-0.2 0-0.4 0-0.6 0-0.2 0-0.6 0.1-0.9 0.4-0.3 0.3-1 1-1 2.4s1 2.7 1.1 2.9c0.1 0.2 1.8 2.8 4.4 3.9 0.6 0.3 1 0.5 1.4 0.6 0.6 0.2 1.2 0.2 1.7 0.1 0.5-0.1 1.7-0.7 1.9-1.4 0.2-0.7 0.2-1.3 0.1-1.4-0.1-0.1-0.4-0.2-0.7-0.4z" fill="currentColor"/>
+    </svg>
+  </a>
+
+  // filepath: c:\Users\DELL\OneDrive\Documents\Brand Hub\Lynn\lynn.html
+  <script>
+    // Hamburger Menu Toggle
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobile-menu');
+    
+    if (hamburger) {
+      hamburger.addEventListener('click', function() {
+        hamburger.classList.toggle('active');
+        mobileMenu.classList.toggle('active');
+      });
+
+      // Close menu when a link is clicked
+      const mobileLinks = mobileMenu.querySelectorAll('a');
+      mobileLinks.forEach(link => {
+        link.addEventListener('click', function() {
+          hamburger.classList.remove('active');
+          mobileMenu.classList.remove('active');
+        });
+      });
+
+      // Close menu when clicking outside
+      document.addEventListener('click', function(event) {
+        if (!hamburger.contains(event.target) && !mobileMenu.contains(event.target)) {
+          hamburger.classList.remove('active');
+          mobileMenu.classList.remove('active');
+        }
+      });
+    }
+
+    // Smooth scroll for mobile
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        const href = this.getAttribute('href');
+        if (href !== '#') {
+          e.preventDefault();
+          const target = document.querySelector(href);
+          if (target) {
+            target.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }
+        }
+      });
+    });
+
+    // Image modal / lightbox
+    const imageModal = document.getElementById('image-modal');
+    const imageModalOverlay = document.getElementById('image-modal-overlay');
+    const imageModalClose = document.getElementById('image-modal-close');
+    const imageModalImg = document.getElementById('image-modal-img');
+    const imageModalCaption = document.getElementById('image-modal-caption');
+
+    const openImageModal = (img) => {
+      imageModalImg.src = img.src;
+      imageModalImg.alt = img.alt || '';
+      imageModalCaption.textContent = img.alt || '';
+      imageModal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    };
+
+    const closeImageModal = () => {
+      imageModal.classList.remove('active');
+      document.body.style.overflow = '';
+    };
+
+    document.querySelectorAll('.hero-image img, .category-card img').forEach(img => {
+      img.style.cursor = 'pointer';
+      img.addEventListener('click', () => openImageModal(img));
+    });
+
+    imageModalOverlay.addEventListener('click', closeImageModal);
+    imageModalClose.addEventListener('click', closeImageModal);
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && imageModal.classList.contains('active')) {
+        closeImageModal();
+      }
+    });
+  </script>
